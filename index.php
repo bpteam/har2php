@@ -53,6 +53,8 @@ function parseData($data)
             $newQuery[] = 'curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file);';
             $newQuery[] = '';
 
+            unset($headers['Cookie'], $headers['User-Agent'], $headers['Referer'], $headers['Accept-Encoding']);
+
             $newQuery[] = '$header = [];';
             $newQuery[] = '';
             switch ($entrie->request->method) {
@@ -69,6 +71,7 @@ function parseData($data)
                     $newQuery[] = '';
                     $newQuery[] = '$fields = [];';
                     if ($entrie->request->postData->text) {
+                        unset($headers['Content-Type']);
                         $newQuery[] = '$header[] = \'Content-Type: text/plain\';';
                         $text = addcslashes($entrie->request->postData->text, '"');
                         $text = preg_replace("%\r\n%", '\r\n', $text);
@@ -87,11 +90,11 @@ function parseData($data)
                     die(print_r($entrie));
             }
             $newQuery[] = '';
-            $newQuery[] = '$header[] = \'Accept: ' . $headers['Accept'] . '\';';
-            if (isset($headers['Accept-Charset'])) {
-                $newQuery[] = '$header[] = \'Accept-Charset: ' . $headers['Accept-Charset'] . '\';';
+
+            foreach ($headers as $name => $header) {
+                $newQuery[] = '$header[] = \'' . $name . ': ' . $header . '\';';
             }
-            $newQuery[] = '$header[] = \'Accept-Language: ' . $headers['Accept-Language'] . '\';';
+
             $newQuery[] = '$header[] = \'Pragma: \';';
             $newQuery[] = 'curl_setopt($ch, CURLOPT_HTTPHEADER, $header);';
 
