@@ -1,3 +1,7 @@
+<?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+?>
 <form method="post" action="" enctype="multipart/form-data">
 <input type="file" name="upfile">
 <input type="submit" value="Send" name="submit1">
@@ -13,9 +17,9 @@ if (isset($_POST["submit1"])) {
     $data = json_decode($data, false, 1024000);
 
     unlink($uploadfile);
-?><pre><?
+?><pre><?php
     echo implode("\n", parseData($data));
-?></pre><?
+?></pre><?php
 }
 
 
